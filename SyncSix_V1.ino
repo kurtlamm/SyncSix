@@ -1,4 +1,4 @@
-//SyncSix V1.0       
+//SyncSix V1       
 const unsigned long quant = 75;      //set quantization time constant (how often outputs are refreshed in ms). Default 75ms.  Min 25ms.
 
 
