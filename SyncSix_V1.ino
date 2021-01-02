@@ -272,14 +272,14 @@ void playMP3(unsigned int track) {        //plays MP3 tracks
 
 
 void inputCheck() {         //refreshes input button states and trig
-  digitalWrite(SRload, LOW);  // Write pulse to load pin
+  digitalWrite(SRload, LOW);  // Write pulse to load pin of 74HC165 shift register
   delayMicroseconds(5);
   digitalWrite(SRload, HIGH);
   delayMicroseconds(5);
  
   digitalWrite(SRclock, HIGH);  // Get data from 74HC165 shift register
   digitalWrite(SRclocken, LOW);
-  byte incoming = shiftIn(SRdatain, SRclock, LSBFIRST);
+  byte incoming = shiftIn(SRdatain, SRclock, LSBFIRST);     //recieve incoming byte from shift register
   digitalWrite(SRclocken, HIGH);
 
   if (!(incoming & 0x80 )) {            //set channel states based on input buttons
