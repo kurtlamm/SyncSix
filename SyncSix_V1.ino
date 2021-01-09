@@ -1,4 +1,4 @@
-//SyncSix V1       
+//SyncSix V1 Arduino Sketch      
 const unsigned long quant = 75;      //set quantization time constant (how often outputs are refreshed in ms). Default 75ms.  Min 25ms.
 
 
@@ -10,7 +10,7 @@ const unsigned long quant = 75;      //set quantization time constant (how often
 #define volbyte 1
 #define sonicbyte 2
 
-#define SRload 5          //define pins
+#define SRload 5          //define pin connections
 #define SRdatain 2
 #define SRclock 4
 #define SRclocken A1
@@ -28,7 +28,7 @@ const unsigned long quant = 75;      //set quantization time constant (how often
 #define tx 11
 #define rx 12
 
-SoftwareSerial DFSoftwareSerial(rx, tx);                                            // RX, TX
+SoftwareSerial DFSoftwareSerial(rx, tx);                                            // RX, TX of MP3 player
 const byte playMP31[] = {0x7E, 0xFF, 0x06, 0x03, 0x00, 0x00, 0x01, 0xEF};           //message to send to MP3 player to play track 1
 const byte playMP32[] = {0x7E, 0xFF, 0x06, 0x03, 0x00, 0x00, 0x02, 0xEF};           //message to send to MP3 player to play track 2
 
@@ -318,16 +318,16 @@ void inputCheck() {         //refreshes input button states and trig
     digitalWrite(utrig, HIGH);                       //trigger ultrasonic sensor
     delayMicroseconds(10);
     digitalWrite(utrig, LOW);
-    long duration = pulseIn(uecho, HIGH, 7000);
-    if (duration == 0) { duration=7000; }            //if no pulse is recieved (no ultrasonic conected/bad pulse) set to max length
-    if (  map(constrain(duration, 150, 7000), 150, 7000, 1, 1024) < map(analogRead(pot), 0, 1024, 1024, 0)) {         //set sonicState HIGH if duration is less than potentiometer value
+    long duration = pulseIn(uecho, HIGH, 12000);
+    if (duration == 0) { duration=12000; }            //if no pulse is recieved (no ultrasonic conected/bad pulse) set to max length
+    if (  map(constrain(duration, 150, 12000), 150, 12000, 1, 1024) < map(analogRead(pot), 0, 1024, 1024, 0)) {         //set sonicState HIGH if duration is less than potentiometer value
       sonicstate = HIGH;
     } else sonicstate = LOW;
 
     //ultrasonic sometimes gets falsly triggered when mp3 player stops playing ambient track
     if (EEPROM.read(ambientbyte)) {     //if play ambient track is enabled
       delay(15);                        //wait to allow busy pin to be analog read
-      if (analogRead(busy)>500) {       //read busy pin. If ambient track has stoped
+      if (analogRead(busy)>500) {       //read busy pin to find out if ambient track has stoped
               sonicstate = LOW;         //set sonic state LOW to cancel any false triggers. 
       }
     }
