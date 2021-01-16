@@ -21,8 +21,8 @@ const unsigned long quant = 75;      //set quantization time constant (how often
 #define ch5 7
 #define ch6 6
 #define led 13
-#define utrig A3
-#define uecho A2
+#define utrig A2
+#define uecho A3
 #define pot A7
 #define busy A6
 #define tx 11
