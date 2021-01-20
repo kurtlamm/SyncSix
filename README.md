@@ -1,5 +1,5 @@
 # Welcome to the SyncSix Prop Controllers Github!
-Here you will find various Arduino Sketches that can run on the SyncSix line of open source prop controllers (as well as other resources). 
+Here you will find various Arduino Sketches that can run on the SyncSix line of open source prop controllers (as well as other resources). https://syncsix.com
 
 Current factory default version is: SyncSix_V1.ino
 
