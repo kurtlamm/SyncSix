@@ -8,5 +8,5 @@ You can define the controller quantization time constant "quant" to be whatever 
 
 STL Files: You may need to adjust the horisontal expansion setting on your 3D prnter to get a proper fit. Recomended is -0.1mm.
 
-If you are trying to use a SyncSix controller in a unique way for which special code needs to be developed, please reach out at syncsixcontrollers@gmail.com       
+If you are trying to use a SyncSix controller in a unique way for which special code needs to be developed, please reach out at syncsixcontrollers@gmail.com or message us on Facebook (https://www.facebook.com/SyncSixControllers/)     
 I will be happy to discuss and help out in developing special code to continue increasing the versilitity of SyncSix controllers!
