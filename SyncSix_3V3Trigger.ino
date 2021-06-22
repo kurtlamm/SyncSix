@@ -2,7 +2,7 @@
 //Similar to SyncSix_V1 Arduino Sketch however ultrasonic sensor functionality has been removed to allow a 3.3V trigger signal (or any other voltage singnal 0.5-5v) to trigger the controller.        
 //Measures the voltage on the ultrasonic TRIG pin. 
 //If the voltage on this pin rises above the defined value "thresholdV" the controller will be triggered.
-//The ground of the triggering device should be connected to the ground of the controller.
+//NOTE: The ground of the triggering device should be connected to the ground of the controller.
 
 const double thresholdV = 2.7;        //set the voltage threshold for ultrasonic TRIG pin to trigger the controller
 
