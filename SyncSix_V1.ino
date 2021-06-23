@@ -71,6 +71,8 @@ void setup() {
   byte MP3setvol[] = {0x7E, 0xFF, 0x06, 0x06, 0x00, 0x00, EEPROM.read(volbyte), 0xEF};     //read stored volume level
   DFSoftwareSerial.write(MP3setvol, 8);                //set volume of MP3 player
 
+  startupCh();    //run startupCh function to turn on channels that should be on in the untriggered state
+  
   digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); //blink six times for startup confirmation
 }
 
@@ -195,6 +197,17 @@ void recSeqLayer(){
   digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); 
 }
 
+
+void startupCh(){                                     //turns on channels that should be on in the untriggered state on controller startup 
+  unsigned long currentmemory = 0;
+  byte instructPrev = readEEPROM(currentmemory); currentmemory++;     //read in  instruction and move to next memory position
+  byte instruct = readEEPROM(currentmemory); currentmemory++;     //read in next instruction and move to next memory position  
+  while(bitRead(instruct, 7) != 1 && currentmemory<65534){    //while havent reched stop bit and is still memory
+    instructPrev = instruct;
+    instruct = readEEPROM(currentmemory); currentmemory++;     //read in next instruction and move to next memory position  
+  }
+  updateCh(instructPrev);
+}
 
 
 void updateCh(byte states) {            //updates output channels
