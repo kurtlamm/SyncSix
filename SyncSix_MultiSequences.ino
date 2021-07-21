@@ -1,6 +1,6 @@
 //SyncSix Multi Sequences Arduino Sketch   
 //Allows multiple audio files and coresponding sequences to be programed into the controller.
-//The controller will play the next audio file and sequence when triggered and will loop back to the first sequence after playing the last sequence.
+//The controller will play the next audio file and sequence when triggered (or rec/layer is used) and will loop back to the first sequence after playing the last sequence.
 //Upload audio files to the SD card in the normal way; Upload MP3 for first sequence first, second MP3 second, etc. Upload ambient audio file last if desired. 
 //numOfSeq (number of sequences)defines the total number of sequences the controller will record/playback
 
