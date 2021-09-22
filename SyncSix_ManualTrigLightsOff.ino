@@ -7,8 +7,8 @@
 
 //Ultrasonic Trigger is disabled. No programming functionality. Ambient audio can be used. Scare audio track is triggered when scare channels are turned on.
 
-const unsigned int scareDelay = 2000;    //define time (ms) controller waits to activate scare channels
-const unsigned int scareTime = 3000;    //define time (ms) controller will activate scare channels
+const unsigned int scareDelay = 3000;    //define time (ms) controller waits to activate scare channels
+const unsigned int scareTime = 2000;    //define time (ms) controller will activate scare channels
 
 const bool invertTrig = LOW;    //Set to HIGH if using a normally closed trigger switch
 
