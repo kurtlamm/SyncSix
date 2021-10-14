@@ -100,11 +100,6 @@ void loop() {
 
 
 
-
-
-
-
-  
   if ((trigstate||sonicstate) & !shiftstate) {            //if triggered, play sequence
     digitalWrite(led, HIGH);  //turn on led for duration of playback
     playSeq();                //play sequence
