@@ -3,6 +3,8 @@
 //The duration of the fade is set via the ultrasonic distance potentiometer.
 //The controller will keep channels 1-3 off and 4-6 on for a set amount of time before resetting. This time is set by holding SHIFT and tapping CH1/REC.
 //The indicator led will count down 3 times and stay illuminated until SHIFT is pressed again. The time the indicator LED is lit is how long the delay until reset will be.
+//Ambient audio track is enabled/disabled normally via the SHIFT + CH6/Ambient button
+//Scare track is is enabled/disabled  via the SHIFT + TRIG button
 
 
 unsigned int fadeTime;
