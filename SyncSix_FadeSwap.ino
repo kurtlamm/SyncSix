@@ -90,13 +90,18 @@ void loop() {
   
   if ((trigstate||sonicstate) & !shiftstate) {            //if triggered, fade LEDs, then wait to reset
     digitalWrite(led, HIGH);  //turn on led for duration of playback
-    playMP3(1);
-    for (int i=0; i<=fadeTime; i++){      //fade LEDs with varying PWM duty cycle
+    if (EEPROM.read(sonicbyte)) {playMP3(1);} //if scare track is enabled, play scare track
+    unsigned long pastmicros = micros();
+    
+    for (unsigned int i=0; i<=fadeTime; i++){      //fade LEDs with varying PWM duty cycle
       updateCh(0b00000111);
-      delayMicroseconds(fadeTime-i);
-      updateCh(0b00111000);
-      delayMicroseconds(i);
+      while (micros()-pastmicros < fadeTime){
+        if (micros()-pastmicros > fadeTime-i){digitalWrite(ch1, LOW); digitalWrite(ch2, LOW); digitalWrite(ch3, LOW); digitalWrite(ch4, HIGH); digitalWrite(ch5, HIGH); digitalWrite(ch6, HIGH);}
+      }
+      pastmicros = micros();
     }
+
+    
     unsigned long delayTime = EEPROM.read(waitTimebyte)*2000UL;
     delay(delayTime);
     updateCh(0b00000111);
@@ -128,6 +133,11 @@ void loop() {
     if (EEPROM.read(ambientbyte) == 0){ EEPROM.write(ambientbyte, 1); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(1000); }
     else {EEPROM.write(ambientbyte, 0); digitalWrite(led, HIGH); delay(400); digitalWrite(led, LOW); delay(400); digitalWrite(led, HIGH); delay(400); digitalWrite(led, LOW); delay(400); digitalWrite(led, HIGH); delay(400); digitalWrite(led, LOW); delay(400); digitalWrite(led, HIGH); delay(400); digitalWrite(led, LOW); }
   }
+
+  if (shiftstate  &&  trigstate)  {   //toggle ultrasonic enable eeprom bit if shift and trig are pressed. Ultrasonic bit used to enable/disable scare track
+    if (EEPROM.read(sonicbyte) == 0){  EEPROM.write(sonicbyte, 1); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(50); digitalWrite(led, HIGH); delay(50); digitalWrite(led, LOW); delay(1000); }
+    else { EEPROM.write(sonicbyte, 0); digitalWrite(led, HIGH); delay(400); digitalWrite(led, LOW); delay(400); digitalWrite(led, HIGH); delay(400); digitalWrite(led, LOW); delay(400); digitalWrite(led, HIGH); delay(400); digitalWrite(led, LOW); delay(400); digitalWrite(led, HIGH); delay(400); digitalWrite(led, LOW); }
+  }  
 
   if (shiftstate  &&  ch5state) {    //if volume + is pressed
     byte newVol = constrain((EEPROM.read(volbyte) +1), 0, 30);      //read current volume from memory. Increment and constrain to volume range 0-30
@@ -230,5 +240,5 @@ void inputCheck() {         //refreshes input button states and trig
     trigstate = HIGH;
   } else trigstate = LOW;
 
-  fadeTime = map(analogRead(pot), 0, 1024, 5000, 500);    //read ultrasonic distance pot and convert to fadeTime delay value to adjust time taken to fade
+  fadeTime = map(analogRead(pot), 0, 1024, 8000, 200);    //read ultrasonic distance pot and convert to fadeTime delay value to adjust time taken to fade
 }
