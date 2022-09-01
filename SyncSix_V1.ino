@@ -278,6 +278,7 @@ void playMP3(unsigned int track) {        //plays MP3 tracks
           break;
     case 2:
           DFSoftwareSerial.write(playMP32, 8);      //send code to play 2nd MP3
+          delay(300);
           break;
   }
 }
