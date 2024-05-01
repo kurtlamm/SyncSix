@@ -47,8 +47,8 @@ bool sonicstate;
 
 void setup() {
   pinMode(led, OUTPUT);  digitalWrite(led, LOW);      //setup LED
-  pinMode(pot, INPUT);                                //setup potentiometer
-  pinMode(busy, INPUT);                               //setup MP3 player feedback pin
+  //pinMode(pot, INPUT);                                //setup potentiometer
+  //pinMode(busy, INPUT);                               //setup MP3 player feedback pin
 
   pinMode(utrig, OUTPUT); digitalWrite(utrig, LOW);   // Set the ultrasonic trigPin as an OUTPUT and set LOW
   pinMode(uecho, INPUT);                              // Set the ultrasonic echoPin as an INPUT
