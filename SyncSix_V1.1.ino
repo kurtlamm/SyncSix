@@ -5,6 +5,8 @@ const unsigned long quant = 75;      //set quantization time constant (how often
 #include <SoftwareSerial.h>
 #include <EEPROM.h>
 #include <Wire.h>  
+#include <DFPlayerMini_Fast.h>
+
 
 #define ambientbyte 0     //define arduino nano internal EEPROM settings bytes
 #define volbyte 1
@@ -29,8 +31,7 @@ const unsigned long quant = 75;      //set quantization time constant (how often
 #define rx 12
 
 SoftwareSerial DFSoftwareSerial(rx, tx);                                            // RX, TX of MP3 player
-const byte playMP31[] = {0x7E, 0xFF, 0x06, 0x03, 0x00, 0x00, 0x01, 0xEF};           //message to send to MP3 player to play track 1
-const byte playMP32[] = {0x7E, 0xFF, 0x06, 0x03, 0x00, 0x00, 0x02, 0xEF};           //message to send to MP3 player to play track 2
+DFPlayerMini_Fast myMP3;
 
 bool ch1state;    //global vars to store input states
 bool ch2state;
@@ -46,33 +47,38 @@ bool sonicstate;
 
 
 void setup() {
-  pinMode(led, OUTPUT);  digitalWrite(led, LOW);      //setup LED
-  //pinMode(pot, INPUT);                                //setup potentiometer
-  //pinMode(busy, INPUT);                               //setup MP3 player feedback pin
+  Serial.begin(115200);
+
+  DFSoftwareSerial.begin(9600);                       // Begin serial connection to MP3 player
+  delay(100);
+  myMP3.begin(DFSoftwareSerial, true);                // Start MP3 player
+  delay(100);
+  myMP3.volume(EEPROM.read(volbyte));                 // Set MP3 player volume
+  delay(100);
+
+  pinMode(led, OUTPUT);  digitalWrite(led, LOW);      // Setup LED
+  //pinMode(pot, INPUT);                              // Setup potentiometer. PROBLOMATIC FOR DF PLAYER!!! (for some uCs so comment out)
+  //pinMode(busy, INPUT);                             // Setup MP3 player feedback pin. PROBLOMATIC FOR DF PLAYER!!! (for some uCs so comment out)
 
   pinMode(utrig, OUTPUT); digitalWrite(utrig, LOW);   // Set the ultrasonic trigPin as an OUTPUT and set LOW
   pinMode(uecho, INPUT);                              // Set the ultrasonic echoPin as an INPUT
 
-  pinMode(ch1, OUTPUT); digitalWrite(ch1, LOW);       //setup output channel pins and set all to LOW
+  pinMode(ch1, OUTPUT); digitalWrite(ch1, LOW);       // Setup output channel pins and set all to LOW
   pinMode(ch2, OUTPUT); digitalWrite(ch2, LOW);
   pinMode(ch3, OUTPUT); digitalWrite(ch3, LOW);
   pinMode(ch4, OUTPUT); digitalWrite(ch4, LOW);
   pinMode(ch5, OUTPUT); digitalWrite(ch5, LOW);
   pinMode(ch6, OUTPUT); digitalWrite(ch6, LOW);
 
-  pinMode(SRload, OUTPUT);                            //setup input shift register pins
+  pinMode(SRload, OUTPUT);                            // Setup input shift register pins
   pinMode(SRclocken, OUTPUT);
   pinMode(SRclock, OUTPUT);
   pinMode(SRdatain, INPUT);
   
-  Wire.begin();                                       //begin I2C connection to external EEPROM
+  Wire.begin();                                       // Begin I2C connection to external EEPROM
 
-  DFSoftwareSerial.begin(9600);                       //begin serial connection to MP3 player
-  byte MP3setvol[] = {0x7E, 0xFF, 0x06, 0x06, 0x00, 0x00, EEPROM.read(volbyte), 0xEF};     //read stored volume level
-  DFSoftwareSerial.write(MP3setvol, 8);                //set volume of MP3 player
+  startupCh();    // Run startupCh function to turn on channels that should be on in the untriggered state
 
-  startupCh();    //run startupCh function to turn on channels that should be on in the untriggered state
-  
   digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(100); //blink six times for startup confirmation
 }
 
@@ -103,7 +109,7 @@ void loop() {
 
   if (EEPROM.read(ambientbyte) && (analogRead(busy)>500)) {    //if play ambient track and ambient track has stoped
     playMP3(2);     //play 2nd MP3 (ambient)
-    delay(25);
+    delay(500);
   }
 
 
@@ -274,10 +280,10 @@ byte readEEPROM(unsigned int eeaddress ) {        //reads and returns external E
 void playMP3(unsigned int track) {        //plays MP3 tracks
   switch (track) {
     case 1:
-          DFSoftwareSerial.write(playMP31, 8);      //send code to play 1st MP3
+          myMP3.play(1);
           break;
     case 2:
-          DFSoftwareSerial.write(playMP32, 8);      //send code to play 2nd MP3
+          myMP3.play(2);
           delay(300);
           break;
   }
